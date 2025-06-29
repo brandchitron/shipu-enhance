@@ -17,7 +17,10 @@ app.post('/upscale', upload.single('image'), (req, res) => {
   const cmd = `python3 ./realesrgan/inference_realesrgan.py -n RealESRGAN_x4plus -i ${inputPath} -o results/`;
 
   exec(cmd, (err, stdout, stderr) => {
-    if (err) return res.status(500).send('Upscaling failed');
+    if (err) {
+      console.error('Upscale error:', err, stderr);
+      return res.status(500).send('Upscaling failed');
+    }
     res.download(outputPath, `${filename}_upscaled.png`);
   });
 });

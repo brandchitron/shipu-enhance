@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Image Upscaler</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 40px; }
+    input, button { margin-top: 20px; font-size: 1.2em; }
+  </style>
+</head>
+<body>
+  <h1>🔼 Image Upscaler</h1>
+  <form id="uploadForm" enctype="multipart/form-data">
+    <input type="file" name="image" accept="image/*" required />
+    <br/>
+    <button type="submit">Upscale</button>
+  </form>
+  <div id="result"></div>
+
+  <script>
+    document.getElementById('uploadForm').onsubmit = async function (e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+
+      const response = await fetch('/upscale', {
+        method: 'POST',
+        body: formData
+      });
+
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        document.getElementById('result').innerHTML = `<p>⬇️ Upscaled Image:</p><img src="${url}" style="max-width:90%;"/><br/><a href="${url}" download>Download</a>`;
+      } else {
+        document.getElementById('result').innerText = 'Upscaling failed!';
+      }
+    };
+  </script>
+</body>
+</html>
